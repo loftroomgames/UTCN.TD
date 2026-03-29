@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VueJS Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="http://localhost:8000/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <div class="app" id="app">
+      <h3>VueJS Messenger</h3>
+      
+      <div class="messages">
+        <div v-for="(msg, index) in messages" :key="index" style="margin-bottom: 5px; padding: 8px; background: #0084ff; color: white; border-radius: 15px; width: fit-content;">
+          {{ msg }}
+        </div>
+      </div>
+      
+      <input
+        class="message"
+        type="text"
+        v-model="currentMessage"
+        @keyup.enter.prevent="sendMessage"
+        placeholder="Scrie un mesaj..."
+      />
+      <button class="send-button" @click.prevent="sendMessage">Trimite</button>
+    </div>
+
+    <script src="client.js"></script>
+  </body>
+</html>
