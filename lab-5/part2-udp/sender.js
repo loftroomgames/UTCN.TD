@@ -7,6 +7,7 @@ const client = dgram.createSocket("udp4");
 const PROXY_PORT = 4000;
 const TOTAL_MESSAGES = 10;
 
+
 let sent = 0;
 
 function sendNext() {

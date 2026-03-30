@@ -11,28 +11,61 @@
     <link rel="stylesheet" href="styles/style.css" />
     <script type="text/javascript" src="libs/vue.js"></script>
     <script type="text/javascript" src="libs/axios.js"></script>
+    <style>
+
+      .action-bar { margin-bottom: 20px; padding: 10px; background: #f5f5f5; border-radius: 5px; }
+      .actions { margin-left: auto; }
+      button { cursor: pointer; margin-left: 5px; }
+    </style>
   </head>
 
   <body>
     <div id="app">
       <div class="title">Users</div>
 
+      <div class="action-bar">
+        <strong>Add new user: </strong>
+        <input v-model="newName" placeholder="Name" />
+        <input v-model="newCity" placeholder="City" />
+        <button v-on:click="addUser()">Add User</button>
+      </div>
+
       <ul class="user-list">
         <li>
           <div class="user-row-header">
             <div class="user-name">Name</div>
             <div class="user-city">City</div>
+            <div class="actions">Actions</div>
           </div>
         </li>
 
-        <li v-for="(user, index) in users">
-          <div class="user-row">
+        <li v-for="(user, index) in users" :key="index">
+          
+          <div class="user-row" v-if="editIndex !== index">
             <div class="user-name">{{ user.name }}</div>
             <div class="user-city"><i>{{ user.city }}</i></div>
+            <div class="actions">
+              <button v-on:click="startEdit(index, user)">Edit</button>
+              <button v-on:click="deleteUser(index)">Delete</button>
+            </div>
           </div>
+
+          <div class="user-row" v-if="editIndex === index">
+            <div class="user-name">
+              <input v-model="editName" />
+            </div>
+            <div class="user-city">
+              <input v-model="editCity" />
+            </div>
+            <div class="actions">
+              <button v-on:click="saveEdit()">Save</button>
+              <button v-on:click="cancelEdit()">Cancel</button>
+            </div>
+          </div>
+
         </li>
       </ul>
     </div>
-    <script src="src/app.js"></script>
-  </body>
+    
+    <script src="src/app.js"></script> </body>
 </html>

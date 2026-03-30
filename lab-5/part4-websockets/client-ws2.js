@@ -5,7 +5,6 @@ const WebSocket = require("ws");
 
 const SERVER_URL = "ws://localhost:8080";
 
-const SEND_TIME = 3000;
 
 const ws = new WebSocket(SERVER_URL);
 
@@ -14,11 +13,8 @@ ws.on("open", () => {
 
     // Send an initial message
     ws.send("Hello from WebSocket client!");
-    console.log("Sent: Hello from WebSocket client!");
+    console.log("Sent: Hello from WebSocket client 2!");
 
-    setInterval(() => {
-        ws.send("Mesaj periodic.");
-    }, SEND_TIME);
 });
 
 ws.on("message", (data) => {

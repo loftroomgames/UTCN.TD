@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+  
   <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
     <meta content="utf-8" http-equiv="encoding" />
@@ -20,11 +21,16 @@
       <div class="empty-output" v-if="message == ''">
         The input message is empty
       </div>
+
       <div class="output" v-if="message != ''">
         The input message is: <b> {{ message }} </b>
       </div>
 
-      <button class="process-button" v-on:click="doSomething()">Do something</button>
+      <div class="result" v-if="resultText != ''">
+        <b>{{ resultText }}</b>
+      </div>
+
+      <button class="process-button" v-on:click="doSomething()">Process</button>
     </div>
   </body>
 </html>

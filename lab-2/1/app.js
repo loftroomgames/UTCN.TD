@@ -2,11 +2,17 @@ function run() {
   new Vue({
     el: '#app',
     data: {
-      message: ''
+      message: '',
+      resultText: ''
     },
     methods: {
       doSomething: function () {
-        console.log('The input string value is: ' + this.message);
+        if (this.message === '123') {
+          this.resultText = 'Mesajul este egal cu 123';
+        } else {
+
+          this.resultText = ''; 
+        }
       }
     }
   });

@@ -21,7 +21,7 @@ Real networks are unreliable — packets get dropped, delayed, or corrupted. In 
 
 ```
 sender (port 3000)  ──▶  proxy (port 4000)  ──▶  receiver (port 5000)
-                           🔥 30 % drop rate
+                         🔥 30 % drop rate
 ```
 
 ## Running

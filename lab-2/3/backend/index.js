@@ -1,28 +1,30 @@
-const io = require('socket.io');
-const server = io.listen(8000);
-console.log('Server socket is listening on port 8000');
-let connectedClients = new Map();
+const http = require('http');
+const socketIo = require('socket.io');
 
-// event fired every time a new client connects
-server.on('connection', socket => {
-  console.info(`Client connected [id=${socket.id}]`);
-  connectedClients.set(socket.id, socket);
-  console.log(connectedClients.size + ' client/s connected');
+const server = http.createServer();
 
-  // when socket disconnects, remove it from the map
-  socket.on('disconnect', () => {
-    connectedClients.delete(socket.id);
-    console.info(`Client [id=${socket.id}] disconnected`);
-    console.log(connectedClients.size + ' client/s connected');
+const io = socketIo(server, {
+  cors: {
+    origin: "*", 
+    methods: ["GET", "POST"]
+  }
+});
+
+io.on('connection', (socket) => {
+  console.log(`[+] Client conectat: ${socket.id}`);
+
+
+  socket.on('chat-message', (msg) => {
+    console.log(`Mesaj primit: ${msg}`);
+
+    io.emit('chat-message', msg);
   });
 
-  socket.on('chat', payload => {
-    sendMessageToAllOtherClients(socket, payload);
+  socket.on('disconnect', () => {
+    console.log(`[-] Client deconectat: ${socket.id}`);
   });
 });
 
-function sendMessageToAllOtherClients(sender, message) {
-  for (let [key, socket] of connectedClients) {
-    socket.emit('message-from-server', { id: sender.id, message: message });
-  }
-}
+server.listen(8000, () => {
+  console.log('Serverul de Chat ruleaza pe portul 8000!');
+});

@@ -24,6 +24,15 @@ wss.on("connection", (ws, req) => {
     ws.on("message", (data) => {
         const text = data.toString();
         console.log(`Received: "${text}"`);
+        
+
+    wss.clients.forEach((client) => {
+        if (client !== ws) {
+            client.send(`Broadcasted: ${text}`);
+        }
+    });
+
+
         ws.send(`Echo: ${text}`);
     });
 
@@ -31,6 +40,7 @@ wss.on("connection", (ws, req) => {
         console.log("Client disconnected");
     });
 });
+
 
 // Heartbeat: ping every client periodically and terminate dead connections
 const interval = setInterval(() => {
@@ -45,9 +55,11 @@ const interval = setInterval(() => {
     });
 }, HEARTBEAT_INTERVAL);
 
+
 wss.on("close", () => {
     clearInterval(interval);
 });
+
 
 console.log(`WebSocket server listening on ws://localhost:${PORT}`);
 console.log(`Heartbeat interval: ${HEARTBEAT_INTERVAL} ms`);

@@ -9,14 +9,18 @@ const EOF = 0x03; // End of Frame
  * Creates a framed packet from a plain-text string.
  * Frame layout: [SOF] [Payload] [Checksum] [EOF]
  */
-function createFrame(dataString) {
+function createFrame(dataString)
+{
     const payload = Buffer.from(dataString);
+
+    
     // XOR checksum: fold every byte together with ^.
     // Example for "Hi" (0x48, 0x69):
     //   acc starts at 0  → 0x00 ^ 0x48 = 0x48
     //                     → 0x48 ^ 0x69 = 0x21  ← final checksum
     // If any single byte changes in transit, the recomputed value won't match.
-    const checksum = payload.reduce((acc, val) => acc ^ val, 0);
+
+    const checksum = payload.reduce( (acc, val) => acc ^ val, 0 );
 
     const frame = Buffer.concat([
         Buffer.from([SOF]),
@@ -34,8 +38,10 @@ function createFrame(dataString) {
 /**
  * Verifies the integrity of a received frame by recalculating the checksum.
  */
-function verifyFrame(frame) {
-    if (frame[0] !== SOF || frame[frame.length - 1] !== EOF) {
+function verifyFrame(frame)
+{
+    if (frame[0] !== SOF || frame[frame.length - 1] !== EOF)
+    {
         console.error("❌ Invalid frame delimiters!");
         return false;
     }
@@ -60,10 +66,14 @@ function verifyFrame(frame) {
 
 // --- Demo ---
 console.log("=== Creating and verifying a valid frame ===");
-const myFrame = createFrame("Hello Network");
+const myFrame = createFrame("Hi");
 verifyFrame(myFrame);
 
 console.log("\n=== Simulating corruption ===");
 const corruptFrame = Buffer.from(myFrame); // copy
-corruptFrame[3] = 0xff; // corrupt one payload byte
+
+console.log("frame: " + corruptFrame);
+corruptFrame[1] = 0x49;
+corruptFrame[2] = 0x68;    /// !!
+
 verifyFrame(corruptFrame);

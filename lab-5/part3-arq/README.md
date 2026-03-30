@@ -22,38 +22,21 @@ UDP alone provides no delivery guarantee. In this exercise you will add reliabil
 
 ```
 client  ──▶  proxy (port 4000)  ──▶  server (port 5000)
-   ◀── ACK ────────┘ ◀── ACK ──────────┘
+   ◀── ACK ──────────────────────────┘
 ```
 
-The Part 3 proxy is **bidirectional**: it forwards client packets to the server *and* relays server ACKs back to the client, applying the drop rate in both directions.
+> **Tip:** Reuse the Chaos Proxy from Part 2 (`part2-udp/proxy.js`) to introduce packet loss.
 
 ## Running
 
-### Free ports before starting
-
-If ports 4000 or 5000 are already in use, kill the owning processes first (PowerShell):
-
-```powershell
-Get-NetUDPEndpoint -LocalPort 4000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
-Get-NetUDPEndpoint -LocalPort 5000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
-```
-
-### Quick start (single terminal)
-
-```bash
-node run.js
-```
-
-This launches the server, proxy, and client with prefixed output.
-
-### Manual start (three terminals)
+Open **three** terminals:
 
 ```bash
 # Terminal 1 — start the server (receiver + ACK sender)
 node server.js
 
-# Terminal 2 — start the bidirectional chaos proxy
-node proxy.js
+# Terminal 2 — start the chaos proxy
+node ../part2-udp/proxy.js
 
 # Terminal 3 — start the reliable client
 node client.js
@@ -65,4 +48,3 @@ node client.js
 2. Increase the proxy drop rate to 50 % and note how many retransmissions occur.
 3. **Challenge:** Change the timeout from 2 s to 500 ms and observe the difference.
 4. **Bonus:** Extend the client to send multiple messages in sequence (e.g., an array of strings).
-

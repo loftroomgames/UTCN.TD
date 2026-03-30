@@ -17,7 +17,8 @@ const messages = [
 let sequenceNumber = 0;
 let currentTimeout = null;
 
-function sendReliable() {
+function sendReliable()
+{
     if (sequenceNumber >= messages.length) {
         console.log("\n🎉 All messages delivered successfully!");
         client.close();

@@ -1,24 +1,56 @@
-var api = require('./src/api.js').app;
-var users = require('./src/users.json');
+const express = require('express');
+const cors = require('cors');
+const app = express();
 
-api.get('/', function (request, response) {
-  response.json('NodeJS REST API');
+app.use(cors());
+app.use(express.json());
+
+
+let users = [
+  { "name": "Cristina", "city": "Sebes" },
+  { "name": "Andrei", "city": "Satu Mare" },
+  { "name": "Sebastian", "city": "Bistrita-Nasaud" },
+  { "name": "Maria", "city": "Cluj-Napoca" }
+];
+
+
+// get users
+app.get('/users', (req, res) => {
+    res.json(users);
 });
 
-api.get('/users', function (request, response) {
-  response.json(users);
+// add user
+app.post('/users', (req, res) => {
+    users.push(req.body); 
+    res.status(201).json({ message: 'User adăugat cu succes', user: req.body });
 });
 
-api.put('/users', function (request, response) {
-  users[users.length] = request.body;
-  response.json('User was saved succesfully');
+
+// delete user
+app.delete('/users/:index', (req, res) => {
+    const index = parseInt(req.params.index);
+    if (index >= 0 && index < users.length) {
+        users.splice(index, 1); 
+        res.json({ message: 'User șters cu succes' });
+    } else {
+        res.status(404).json({ message: 'Index invalid' });
+    }
 });
 
-api.delete('/users/:index', function (request, response) {
-  users.splice(request.params.index, 1);
-  response.json('User with index ' + request.params.index + ' was deleted');
+
+// edit user
+app.put('/users/:index', (req, res) => {
+    const index = parseInt(req.params.index);
+    if (index >= 0 && index < users.length) {
+        users[index] = req.body; 
+        res.json({ message: 'User modificat cu succes', user: req.body });
+    } else {
+        res.status(404).json({ message: 'Index invalid' });
+    }
 });
 
-api.listen(3000, function () {
-  console.log('Server running @ localhost:3000');
+
+// start server port 3000
+app.listen(3000, () => {
+    console.log('Serverul a pornit si ruleaza pe portul 3000!');
 });
