@@ -1,0 +1,70 @@
+const sampleText = "red, red, green, red, red, blue, red, red, yellow, yellow, red, red, red, red, red, red, red, red, red, red";
+const sampleText2 = "aaaaabbbbaaaabbbbaaaaaadbdbbaaaaaaaabaaaababbbbaaaaaaaabbaaaabbbaaaaaaa";
+const sampleText3 = "qwertyuiop[]';lkjhgfdsazxcvbnm,./1593784260+-";
+
+function buildFrequencyTable(text) {
+  // Fixed-size counter for ASCII/byte values 0..255.
+  const counts = new Uint32Array(256);
+  for (let i = 0; i < text.length; i++) {
+    counts[text.charCodeAt(i)]++;
+  }
+
+  const total = text.length;
+  const rows = [];
+  for (let code = 0; code < counts.length; code++) {
+    if (counts[code] > 0) {
+      // Keep only symbols that appear in the input.
+      rows.push({
+        code,
+        symbol: String.fromCharCode(code),
+        count: counts[code],
+        probability: counts[code] / total,
+      });
+    }
+  }
+  // Most frequent symbols first to make patterns easier to read.
+  rows.sort((a, b) => b.count - a.count);
+  return rows;
+}
+
+function entropy(rows) {
+  // Shannon entropy: H(X) = -sum(p * log2(p)).
+  let h = 0;
+  for (const row of rows) {
+    h += -row.probability * Math.log2(row.probability);
+  }
+  return h;
+}
+
+function printAnalysis(text) {
+  const rows = buildFrequencyTable(text);
+  const h = entropy(rows);
+  // Baseline: 8 bits per character with plain text encoding.
+  const originalBits = text.length * 8;
+  // Theoretical lower bound for any lossless compressor on this source.
+  const entropyLowerBoundBits = h * text.length;
+
+  console.log("Input:", text);
+  console.log("Length:", text.length, "characters");
+  console.log("\nTop symbols:");
+  console.table(
+    rows.map((r) => ({
+      symbol: r.symbol === " " ? "<space>" : r.symbol,
+      count: r.count,
+      probability: r.probability.toFixed(4),
+    }))
+  );
+
+  console.log("Entropy H(X):", h.toFixed(4), "bits/symbol");
+  console.log("Original size:", originalBits, "bits");
+  console.log("Theoretical lower bound:", entropyLowerBoundBits.toFixed(2), "bits");
+  console.log(
+    "Estimated best-case reduction:",
+    ((1 - entropyLowerBoundBits / originalBits) * 100).toFixed(2) + "%"
+  );
+}
+
+
+printAnalysis(sampleText);
+printAnalysis(sampleText2);
+printAnalysis(sampleText3);
