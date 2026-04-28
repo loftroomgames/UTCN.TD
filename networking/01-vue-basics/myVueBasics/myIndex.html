@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>My Vue.js Reactivity Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app" class="card">
+        <h2>Demo 1: Vue.js Reactivity</h2>
+        <div class="sub">Totul se updatează automat. Fără page reload. </div>
+
+        <input v-model="message" placeholder="scrie ceva aici ...">
+        <div class="counter">{{message.length}} charactere</div>
+
+        <div class="box empty" v-if="message === ''">Îcepe să scrii ca să vezi cum reacționează.</div>
+        <div class="box magic" v-else-if="message === 'secret'">Codul secret a fost introdus!</div>
+        <div class="box ok" v-else>
+            <div>{{ message }}</div>
+            <div class="reversed">Reversed: {{ message.split('').reverse().join('') }}</div>
+            <div class="upper">{{ message.toUpperCase() }}</div>
+        </div>
+
+        <button @click="save()">Salvează</button>
+
+        <div class="history" v-if="history.length">
+            <h3>Mesaje salvate: ({{ history.length }})</h3>
+            <span class="pill" v-for="h in history">{{ h }}</span>
+        </div>
+    </div>
+
+    <script src="myApp.js"></script>
+</body>
+
+</html>
