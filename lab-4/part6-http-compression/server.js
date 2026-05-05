@@ -3,10 +3,11 @@ const zlib = require("zlib");
 
 const PORT = 8080;
 
-function makePayload(pretty) {
+function makePayload(pretty)
+{
   // Repetitive JSON makes compression effects easy to observe.
   const rows = [];
-  for (let i = 0; i < 2500; i++) {
+  for (let i = 0; i < 50000; i++) {
     rows.push({
       id: i + 1,
       sensor: "temp-east-1",
@@ -102,8 +103,9 @@ const server = http.createServer((req, res) => {
   }
 
   const prettyFlag = (url.searchParams.get("pretty") || "").toLowerCase();
-  const pretty = prettyFlag === "1" || prettyFlag === "true" || prettyFlag === "yes";
+  const pretty = ["1", "true", "yes", "on"].includes(prettyFlag);
   const payload = makePayload(pretty);
+  
   // Read client capability from Accept-Encoding.
   const encoding = negotiateEncoding(req.headers["accept-encoding"]);
 
